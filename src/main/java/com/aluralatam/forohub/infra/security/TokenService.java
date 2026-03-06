@@ -24,7 +24,7 @@ public class TokenService {
             var algortimo = Algorithm.HMAC256(secreto);
             return JWT.create()
                     .withIssuer("API ForoHub")
-                    .withSubject(usuario.getPassword())
+                    .withSubject(usuario.getUsername())
                     .withExpiresAt(fechaExpiracion())
                     .sign(algortimo);
         } catch (JWTCreationException exception){

@@ -17,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping ("/topicos")
 
-//indicamos bearer  despues
 
 public class TopicoController {
 
