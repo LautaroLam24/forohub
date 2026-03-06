@@ -47,4 +47,22 @@ public class Topico {
         if (fechaCreacion == null) fechaCreacion = LocalDateTime.now();
         if (status == null) status = StatusTopico.ACTIVO;
     }
+
+    public void actualizarInformacionTopico (@Valid DatosActualizadosTopico datos){
+        if (datos.titulo() != null){
+            this.titulo = datos.titulo();
+        }
+        if (datos.mensaje() != null){
+            this.mensaje = datos.mensaje();
+        }
+        if (datos.autor() != null){
+            this.autor= datos.autor();
+        }
+        if (datos.curso() != null){
+            this.autor = datos.autor();
+        }
+        if(datos.status() != null){
+            this.status = datos.status();
+        }
+    }
 }
