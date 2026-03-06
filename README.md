@@ -72,6 +72,7 @@ src/main/java/com/aluracursos/forohub
 ├── infra
 │   └── security
 │       ├── SecurityConfigurations
+│       └── SecurityErrorHandler
 │       ├── SecurityFilter
 │       └── TokenService
 
