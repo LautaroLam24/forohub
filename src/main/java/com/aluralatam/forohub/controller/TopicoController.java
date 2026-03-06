@@ -2,6 +2,7 @@ package com.aluralatam.forohub.controller;
 
 import com.aluralatam.forohub.domain.topico.DatosActualizadosTopico;
 import com.aluralatam.forohub.domain.topico.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping ("/topicos")
-
+@SecurityRequirement(name = "bearer-key")
 
 public class TopicoController {
 
@@ -38,7 +39,7 @@ public class TopicoController {
         }
 
         @GetMapping
-        public ResponseEntity <Page<DatosListaTopicos>> listar(@PageableDefault (size = 10, sort = {"fechaCreacion", "titulo"},direction = Sort.Direction.ASC)Pageable paginacion){
+        public ResponseEntity <Page<DatosListaTopicos>> listar(@PageableDefault (page = 0, size = 10, sort = {"fechaCreacion", "titulo"},direction = Sort.Direction.ASC)Pageable paginacion){
             var page = repository.findAll(paginacion).map(DatosListaTopicos::new);
 
             return ResponseEntity.ok(page);
