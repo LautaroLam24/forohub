@@ -1,6 +1,5 @@
 package com.aluralatam.forohub.infra.security;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,18 +16,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfigurations {
 
     @Autowired
     private SecurityFilter securityFilter;
 
+    @Autowired
+    private SecurityErrorHandler securityErrorHandler;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf->csrf.disable())
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth-> auth
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(securityErrorHandler))
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs",
@@ -36,7 +38,6 @@ public class SecurityConfigurations {
                                 "/swagger-ui.html",
                                 "/swagger-ui/**"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

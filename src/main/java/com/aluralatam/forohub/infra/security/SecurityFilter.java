@@ -23,31 +23,41 @@ public class SecurityFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        System.out.println("Filtro llamado!");
         var tokenJWT = recuperarToken(request);
-        if (tokenJWT != null){
-            var subject = tokenService.getSubject(tokenJWT);
-            var usuario = repository.findByUsername(subject);
 
-            var authentication = new UsernamePasswordAuthenticationToken(usuario,null,usuario.getAuthorities());
+        if (tokenJWT != null) {
+            try {
+                var subject = tokenService.getSubject(tokenJWT);
+                var usuario = repository.findByUsername(subject);
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("Usuario logueado!");
+                if (usuario != null) {
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            usuario,
+                            null,
+                            usuario.getAuthorities()
+                    );
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (RuntimeException e) {
+                SecurityContextHolder.clearContext();
+            }
         }
-        filterChain.doFilter(request,response);
+
+        filterChain.doFilter(request, response);
     }
 
     private String recuperarToken(HttpServletRequest request) {
-
         var authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null){
-            return authorizationHeader.replace("Bearer ","");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.replace("Bearer ", "");
         }
+
         return null;
     }
-
-
 }
